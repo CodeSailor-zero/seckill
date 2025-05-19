@@ -270,15 +270,16 @@
     function doLogin() {
         var inputPass = $("#password").val();
         var salt = g_passsword_salt;
-        var str = "" + salt.charAt(0) + inputPass + salt.charAt(6);
+        var str = salt.charAt(0) + inputPass + salt.charAt(2);
         var password = md5(str);
         $.ajax({
-            url: "/user/login",
+            url: "/user/doLogin",
             type: "POST", data: {
                 mobile: $("#mobile").val(), password: password
             }, success: function (data) {
                 if (data.code == 200) {
-                    alert(data.message)
+                    // alert(data.message);
+                    window.location.href = "/goods/toList";
                 } else {
                     alert(data.message)
                 }

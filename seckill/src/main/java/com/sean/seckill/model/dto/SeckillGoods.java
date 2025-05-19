@@ -7,47 +7,52 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * @author sean
- * @Date 2025/44/18
- * 用户实体类
+ * @Date 2025/22/18
+ * 秒杀商品的实体类
  */
 @Data
-@TableName("seckill_user")
-public class User implements Serializable {
+@TableName("seckill_goods")
+public class SeckillGoods implements Serializable {
     /**
-     * 用户 ID,手机号码
+     * 秒杀商品id
      */
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    private String nickname;
-    /**
-     * MD5(MD5(pass 明文+固定 salt)+salt)
-     */
-    private String password;
-    private String slat;
 
     /**
-     * 头像
+     * 商品id
      */
-    private String head;
+    private Long goodsId;
 
     /**
-     * 注册时间
+     * 秒杀价格
      */
-    private Date registerDate;
+    private BigDecimal seckillPrice;
 
     /**
-     * 最后一次登录时间
+     * 秒杀商品库存数量
      */
-    private Date lastLoginDate;
+    private Integer stockCount;
 
     /**
-     * 登录次数
+     * 秒杀开始时间
      */
-    private Integer loginCount;
+    private Date startDate;
+
+    /**
+     * 秒杀结束时间
+     */
+    private Date endDate;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 
     /**
      * 更新时间
@@ -59,5 +64,5 @@ public class User implements Serializable {
      */
     @TableLogic
     private Integer isDelete;
-    private static final long serialVersionUID = 5666000L;
+    private static final long serialVersionUID = 5699880L;
 }

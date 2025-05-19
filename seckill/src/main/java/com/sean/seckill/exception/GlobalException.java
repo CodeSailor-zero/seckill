@@ -1,6 +1,5 @@
 package com.sean.seckill.exception;
 
-import com.sean.seckill.common.BaseResponse;
 import com.sean.seckill.common.ErrorCodeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;

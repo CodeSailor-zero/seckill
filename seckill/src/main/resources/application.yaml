@@ -27,7 +27,7 @@ spring:
       connection-test-query: select 1
   #redis的配置
   redis:
-    port: 5379
+    port: 6379
     host: localhost
     database: 3
     password: 123456
@@ -42,6 +42,38 @@ spring:
         max-idle: 200
         #最小空闲连接，默认是 0
         min-idle: 5
+  #rabbitmq的配置
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
+    virtual-host: /
+    listener:
+      simple:
+        #消费者最小数量
+        concurrency: 10
+        #消费者最大数量
+        max-concurrency: 10
+        #限制消费者。每次只能处理一条信息，处理完成才可以处理下一条信息
+        prefetch: 1
+        #启动时是否默认启动容器，默认为 true
+        auto-startup: true
+        #被拒绝时重新进入队列的
+        default-requeue-rejected: true
+    template:
+      retry:
+        #启用消息重试机制，默认为 false
+        enabled: true
+        #初始重试间隔时间
+        initial-interval: 1000ms
+        #重试最大次数，默认为 3 次
+        max-attempts: 3
+        #重试最大时间间隔，默认 10000ms【每次重试的最大时间间隔】
+        max-interval: 10000ms
+        #重试的间隔乘数
+        #配置 2 的话，第一次等 1s，第二次等 2s，第三次等 4s
+        multiplier: 1
 
 # mybatis-plus 的配置
 mybatis-plus:
@@ -56,6 +88,6 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
 #mybatis sql 打印
-logging:
-  level:
-    com.sean.seckill.mapper: debug
+#logging:
+#  level:
+#    com.sean.seckill.mapper: debug

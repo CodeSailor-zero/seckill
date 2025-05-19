@@ -11,8 +11,6 @@ import com.sean.seckill.service.UserService;
 import com.sean.seckill.util.CookieUtil;
 import com.sean.seckill.util.MD5Util;
 import com.sean.seckill.util.UUIDUtil;
-import com.sean.seckill.util.VaildUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +24,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
     @Resource
-    private UserService userService;
+    private UserMapper userMapper;
 
     @Resource
     private RedisTemplate redisTemplate;
@@ -56,15 +55,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 //            return BaseResponse.error(ErrorCodeEnum.MOBILE_ERROR);
 //        }
         //查询数据库，用户是否存在
-        User user = userService.getById(mobile);
+        User user = userMapper.selectById(mobile);
         if (user == null) {
+            System.out.println("用户不存在1");
             throw new GlobalException(ErrorCodeEnum.LOGIN_ERROR);
         }
         //如果用户存在，则比对密码
         //此时传进来的密码是在前端已经加密、加盐的密码【md5(password 明文 + slat1)】
         //而数据库中的密码是【md5(md5(password 明文 + slat1) + slat2)】
+
         String dbPass = MD5Util.midPassToDBPass(password, user.getSlat());
         if (!dbPass.equals(user.getPassword())) {
+            System.out.println("用户不存在2");
             throw new GlobalException(ErrorCodeEnum.LOGIN_ERROR);
         }
         //登录成功
@@ -77,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisTemplate.opsForValue().set("user:" + ticket,user);
         //将票据存入cookie中
         CookieUtil.setCookie(request,response,"userTicket",ticket);
-        return BaseResponse.success();
+        return BaseResponse.success(ticket);
     }
 
     /**
@@ -97,5 +99,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         // 返回用户信息
         return user;
+    }
+
+    @Override
+    public BaseResponse updatePassword(String userTicket, String password, HttpServletRequest request, HttpServletResponse response) {
+        //更新用户密码, 同时删除用户在 Redis 的缓存对象
+        User user = getUserByCookie(userTicket, request, response);
+        if (user == null) {
+            throw new GlobalException(ErrorCodeEnum.MOBILE_NOT_EXIST);
+        }
+        user.setPassword(MD5Util.inputPassToDBPass(password, user.getSlat()));
+        int i = userMapper.updateById(user);
+        if (i == 1) {
+            //删除 redis
+            redisTemplate.delete("user:" + userTicket);
+            return BaseResponse.success();
+        }
+        return BaseResponse.error(ErrorCodeEnum.PASSWORD_UPDATE_FAIL);
     }
 }

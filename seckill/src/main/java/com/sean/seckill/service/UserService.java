@@ -30,4 +30,15 @@ public interface UserService extends IService<User> {
      * @return User
      */
     User getUserByCookie(String userTicket,HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * 修改用户密码，让redis和mysql中的数据保存一致
+     * @param userTicket
+     * @param password
+     * @param request
+     * @param response
+     * @return
+     */
+    BaseResponse updatePassword(String userTicket, String password, HttpServletRequest request, HttpServletResponse response);
+
 }

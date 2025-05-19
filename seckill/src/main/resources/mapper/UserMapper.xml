@@ -11,7 +11,12 @@
         <result column="register_date" property="registerDate"/>
         <result column="last_login_date" property="lastLoginDate"/>
         <result column="login_count" property="loginCount"/>
-        <result column="updateTime"  property="updateTime"/>
-        <result column="isDelete"  property="isDelete"/>
+        <result column="update_time"  property="updateTime"/>
+        <result column="is_delete"  property="isDelete"/>
     </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, nickname, 'password', slat, head, register_date, last_login_date,
+        login_count,updateTime,isDelete
+    </sql>
 </mapper>

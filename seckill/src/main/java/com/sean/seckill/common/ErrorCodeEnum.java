@@ -16,13 +16,18 @@ public enum ErrorCodeEnum {
     //常用的错误码
     SUCCESS(200, "SUCCESS"),
     ERROR(500, "服务端异常"),
+    PARAM_ERROR(700, "参数错误"),
 
     //登录相关的错误码
     LOGIN_ERROR(500210, "用户名或者密码错误"),
     MOBILE_ERROR(500211, "手机号码格式不正确"),
     BING_ERROR(500212, "参数绑定异常"),
     MOBILE_NOT_EXIST(500213, "手机号码不存在"),
-    PASSWORD_UPDATE_FAIL(500214, "更新密码失败");
+    PASSWORD_UPDATE_FAIL(500214, "更新密码失败"),
+
+    //秒杀模块
+    ENTRY_STOCK(500500, "库存不足"),
+    REPEATE_ERROR(500501, "该商品每人限购一件");
 
     private final Integer code;
     private final String message;
